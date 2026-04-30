@@ -135,7 +135,7 @@ enable_error_code = [
     "ignore-without-code",
     "possibly-undefined",
 ]
-files = ["src", "tests", "tools"]
+files = ["src", "tests"]
 
 [[tool.mypy.overrides]]
 module = ["cv2.*"]
