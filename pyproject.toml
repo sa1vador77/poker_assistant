@@ -111,6 +111,14 @@ ignore = [
     "TC001",
     "TC002",
     "TC003",
+    # __post_init__ runs automatically and is not part of the public API:
+    # the invariants it enforces belong in the class-level docstring.
+    "D105",
+    # PLR2004 forbids any literal in comparisons. We name domain constants
+    # (HOLE_CARDS_PER_HAND, MAX_BOARD_CARDS) but accept literal token-length
+    # checks in the range parser, where naming them (PAIR_TOKEN_LENGTH = 2,
+    # SHAPED_TOKEN_LENGTH = 3) obscures rather than clarifies.
+    "PLR2004",
 ]
 
 [tool.ruff.lint.per-file-ignores]
