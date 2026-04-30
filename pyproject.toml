@@ -119,6 +119,12 @@ ignore = [
     # checks in the range parser, where naming them (PAIR_TOKEN_LENGTH = 2,
     # SHAPED_TOKEN_LENGTH = 3) obscures rather than clarifies.
     "PLR2004",
+    # PLR0911 caps return statements at 6 per function. Some domain
+    # algorithms (poker hand classification, command dispatchers) are
+    # naturally expressed as a flat cascade of guarded returns, where
+    # introducing helper functions would harm readability rather than
+    # improve it. We accept the cap is wrong for this codebase.
+    "PLR0911",
 ]
 
 [tool.ruff.lint.per-file-ignores]
