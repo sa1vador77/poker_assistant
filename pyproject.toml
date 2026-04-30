@@ -1,0 +1,174 @@
+[project]
+name = "poker_assistant"
+version = "0.1.0"
+description = "Live poker assistant with screen overlay: vision, game state, decision."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "poker_assistant maintainers" },
+]
+keywords = ["poker", "computer-vision", "decision-engine", "overlay"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Games/Entertainment :: Board Games",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=2.1",
+    "opencv-python>=4.10",
+]
+
+[project.urls]
+Repository = "https://github.com/sa1vador77/poker_assistant"
+
+[project.scripts]
+# CLI entry-points are wired here once the cli package exposes them.
+# Example: pa-vision-inspect = "poker_assistant.cli.vision_inspect:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "pre-commit>=4.0",
+]
+
+# --------------------------------------------------------------------------- #
+# Build backend.
+# --------------------------------------------------------------------------- #
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/poker_assistant"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/poker_assistant/_resources" = "poker_assistant/_resources"
+
+# --------------------------------------------------------------------------- #
+# uv.
+# --------------------------------------------------------------------------- #
+
+[tool.uv]
+# Treat the project itself as an editable dependency of the dev environment,
+# so `uv sync` makes `import poker_assistant` work from tests and tools.
+package = true
+
+# --------------------------------------------------------------------------- #
+# Ruff: linter + formatter.
+# --------------------------------------------------------------------------- #
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "RET",  # flake8-return
+    "PTH",  # flake8-use-pathlib
+    "TCH",  # flake8-type-checking
+    "RUF",  # ruff-specific
+    "PL",   # pylint
+    "TRY",  # tryceratops
+    "ANN",  # flake8-annotations
+    "D",    # pydocstyle
+]
+ignore = [
+    "D100",  # Missing docstring in public module — module-level docstrings are optional for small leaf modules.
+    "D104",  # Missing docstring in public package — __init__.py docstrings are optional.
+    "D203",  # Conflicts with D211.
+    "D213",  # Conflicts with D212.
+    "PLR0913",  # Too many arguments — common in pipelines with many injected dependencies.
+    "TRY003",  # Long exception messages — we prefer informative errors.
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "ANN", "PLR2004"]
+"tools/**" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+# --------------------------------------------------------------------------- #
+# Mypy: strict static typing.
+# --------------------------------------------------------------------------- #
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_unreachable = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+enable_error_code = [
+    "redundant-expr",
+    "truthy-bool",
+    "ignore-without-code",
+    "possibly-undefined",
+]
+files = ["src", "tests", "tools"]
+
+[[tool.mypy.overrides]]
+module = ["cv2.*"]
+ignore_missing_imports = true
+
+# --------------------------------------------------------------------------- #
+# Pytest.
+# --------------------------------------------------------------------------- #
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--import-mode=importlib",
+]
+xfail_strict = true
+markers = [
+    "integration: end-to-end tests that touch real images and templates",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["poker_assistant"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
