@@ -13,7 +13,6 @@ keywords = ["poker", "computer-vision", "decision-engine", "overlay"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
@@ -49,14 +48,23 @@ dev = [
 # --------------------------------------------------------------------------- #
 
 [build-system]
-requires = ["hatchling>=1.27"]
-build-backend = "hatchling.build"
+requires = [
+    "scikit-build-core>=0.10",
+    "pybind11>=2.13",
+]
+build-backend = "scikit_build_core.build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/poker_assistant"]
+[tool.scikit-build]
+# Pure-Python sources live under src/poker_assistant/. The whole package
+# tree (including any subdirectories like _resources/) is included in the
+# wheel; scikit-build-core walks the listed package directory recursively.
+wheel.packages = ["src/poker_assistant"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"src/poker_assistant/_resources" = "poker_assistant/_resources"
+# CMake build configuration. The actual Release-mode flags are set inside
+# CMakeLists.txt; we pin the minimum CMake version here so that
+# scikit-build-core fails fast on old systems with a clear message.
+cmake.version = ">=3.20"
+cmake.build-type = "Release"
 
 # --------------------------------------------------------------------------- #
 # uv.
