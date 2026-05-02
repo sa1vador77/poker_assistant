@@ -20,12 +20,65 @@ class Suit(StrEnum):
     The string value is the Unicode glyph used throughout the project,
     which lets ``Suit("♠")`` round-trip with any rendered text without
     extra conversion.
+
+    For a numeric ordering of suits — needed by combo canonicalisation
+    and by integer card encoding — see :class:`SuitOrder`.
     """
 
     SPADES = "♠"
     HEARTS = "♥"
     DIAMONDS = "♦"
     CLUBS = "♣"
+
+
+class SuitOrder(IntEnum):
+    """Canonical numeric ordering of suits used across the project.
+
+    The order is arbitrary but fixed. Two unrelated systems rely on it:
+
+    * :class:`poker_assistant.domain.ranges.HoleCombo` canonicalises
+      pairs of equal-rank cards by this order, so that a given pair
+      of cards always produces the same combo regardless of the
+      argument order.
+    * The native equity backend encodes a card as
+      ``card_id = suit_order * 13 + (rank - 2)``. Both backends and
+      every test fixture must agree on this mapping.
+
+    Centralising the ordering here gives us a single source of truth.
+    Reordering this enum would silently change the meaning of every
+    integer card id seen by the native code; it must not be edited
+    without coordinated changes elsewhere.
+    """
+
+    SPADES = 0
+    HEARTS = 1
+    DIAMONDS = 2
+    CLUBS = 3
+
+
+# Lookup table from a suit to its numeric order. Building it once at
+# module import is significantly faster than calling SuitOrder[name] in
+# hot paths (combo enumeration, card encoding for the native backend).
+_SUIT_ORDER_BY_SUIT: Final[dict[Suit, SuitOrder]] = {
+    Suit.SPADES: SuitOrder.SPADES,
+    Suit.HEARTS: SuitOrder.HEARTS,
+    Suit.DIAMONDS: SuitOrder.DIAMONDS,
+    Suit.CLUBS: SuitOrder.CLUBS,
+}
+
+_SUIT_BY_SUIT_ORDER: Final[dict[SuitOrder, Suit]] = {
+    order: suit for suit, order in _SUIT_ORDER_BY_SUIT.items()
+}
+
+
+def suit_order(suit: Suit) -> SuitOrder:
+    """Return the canonical numeric order of ``suit``."""
+    return _SUIT_ORDER_BY_SUIT[suit]
+
+
+def suit_from_order(order: SuitOrder) -> Suit:
+    """Return the :class:`Suit` whose canonical order is ``order``."""
+    return _SUIT_BY_SUIT_ORDER[order]
 
 
 class Rank(IntEnum):

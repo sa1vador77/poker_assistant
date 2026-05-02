@@ -148,7 +148,7 @@ DEFAULT_PRESET_DEFINITIONS: tuple[PresetDefinition, ...] = (
         name=RangePreset.TIGHT_OPEN,
         range_text="66+,ATs+,KJs+,QJs,JTs,AJo+,KQo",
         description=(
-            "Tight opening range: strong pairs, strong broadway, " "a few suited connectors."
+            "Tight opening range: strong pairs, strong broadway, a few suited connectors."
         ),
     ),
     PresetDefinition(
@@ -161,14 +161,12 @@ DEFAULT_PRESET_DEFINITIONS: tuple[PresetDefinition, ...] = (
     ),
     PresetDefinition(
         name=RangePreset.BTN_OPEN,
-        range_text=(
-            "22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,86s+,76s,65s,54s," "A8o+,K9o+,Q9o+,J9o+,T9o"
-        ),
+        range_text=("22+,A2s+,K5s+,Q7s+,J8s+,T8s+,97s+,86s+,76s,65s,54s,A8o+,K9o+,Q9o+,J9o+,T9o"),
         description="Wide button opening range for 5-max / short-handed play.",
     ),
     PresetDefinition(
         name=RangePreset.SB_LIMP_CALL,
-        range_text=("22-99,A2s-A9s,K7s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s," "A9o-AJo,KTo+,QTo+,JTo"),
+        range_text=("22-99,A2s-A9s,K7s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A9o-AJo,KTo+,QTo+,JTo"),
         description=(
             "Simplified small-blind limp/call range: many medium-strength "
             "hands, suited hands, and part of broadway."
@@ -177,7 +175,7 @@ DEFAULT_PRESET_DEFINITIONS: tuple[PresetDefinition, ...] = (
     PresetDefinition(
         name=RangePreset.BB_DEFEND,
         range_text=(
-            "22+,A2s+,K5s+,Q7s+,J7s+,T7s+,96s+,86s+,75s+,64s+,54s," "A2o+,K8o+,Q9o+,J9o+,T9o,98o"
+            "22+,A2s+,K5s+,Q7s+,J7s+,T7s+,96s+,86s+,75s+,64s+,54s,A2o+,K8o+,Q9o+,J9o+,T9o,98o"
         ),
         description=(
             "Simplified big-blind defending range against late-position "
@@ -188,15 +186,12 @@ DEFAULT_PRESET_DEFINITIONS: tuple[PresetDefinition, ...] = (
         name=RangePreset.NITTY_CALL_VS_OPEN,
         range_text="22-JJ,AJs-AQs,KQs,QJs,JTs,T9s,98s,AQo",
         description=(
-            "Tight calling range against an open: pairs, strong suited "
-            "broadway, a few connectors."
+            "Tight calling range against an open: pairs, strong suited broadway, a few connectors."
         ),
     ),
     PresetDefinition(
         name=RangePreset.LOOSE_CALL_VS_OPEN,
-        range_text=(
-            "22-QQ,A2s-AQs,K9s+,Q9s+,J9s+,T8s+,98s,87s,76s,65s,54s," "A9o-AQo,KTo+,QTo+,JTo"
-        ),
+        range_text=("22-QQ,A2s-AQs,K9s+,Q9s+,J9s+,T8s+,98s,87s,76s,65s,54s,A9o-AQo,KTo+,QTo+,JTo"),
         description=(
             "Loose calling range against an open: a wide suited block, "
             "pairs, and part of offsuit broadway."

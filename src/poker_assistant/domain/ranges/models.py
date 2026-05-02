@@ -19,12 +19,18 @@ from __future__ import annotations
 
 from collections.abc import Collection, Iterable, Sequence
 from dataclasses import dataclass
-from enum import IntEnum, StrEnum
+from enum import StrEnum
 from functools import cache
 from itertools import combinations
 from typing import Final, Self
 
-from poker_assistant.domain.cards import Card, Rank, Suit, rank_to_label
+from poker_assistant.domain.cards import (
+    Card,
+    Rank,
+    Suit,
+    rank_to_label,
+    suit_order,
+)
 
 
 class ComboShape(StrEnum):
@@ -34,28 +40,6 @@ class ComboShape(StrEnum):
     SUITED = "suited"
     OFFSUIT = "offsuit"
 
-
-class _SuitOrder(IntEnum):
-    """Stable ordering of suits used to canonicalise combos.
-
-    The specific order is arbitrary but fixed: it lets two cards of the
-    same rank be ordered deterministically, which is required so that
-    :meth:`HoleCombo.normalized` produces a single canonical form for
-    each unordered pair of cards.
-    """
-
-    SPADES = 0
-    HEARTS = 1
-    DIAMONDS = 2
-    CLUBS = 3
-
-
-_SUIT_ORDER: dict[Suit, _SuitOrder] = {
-    Suit.SPADES: _SuitOrder.SPADES,
-    Suit.HEARTS: _SuitOrder.HEARTS,
-    Suit.DIAMONDS: _SuitOrder.DIAMONDS,
-    Suit.CLUBS: _SuitOrder.CLUBS,
-}
 
 _SHAPE_PRIORITY: dict[ComboShape, int] = {
     ComboShape.PAIR: 0,
@@ -92,9 +76,8 @@ class HoleCombo:
             raise ValueError("HoleCombo cannot contain the same card twice")
         if int(self.first.rank) < int(self.second.rank):
             raise ValueError("HoleCombo expects the higher-ranked card first")
-        if (
-            self.first.rank == self.second.rank
-            and _SUIT_ORDER[self.first.suit] >= _SUIT_ORDER[self.second.suit]
+        if self.first.rank == self.second.rank and suit_order(self.first.suit) >= suit_order(
+            self.second.suit
         ):
             raise ValueError(
                 "HoleCombo with equal ranks expects suits in canonical order",
@@ -160,7 +143,7 @@ class HoleCombo:
         if int(card_b.rank) > int(card_a.rank):
             return cls(first=card_b, second=card_a)
 
-        if _SUIT_ORDER[card_a.suit] < _SUIT_ORDER[card_b.suit]:
+        if suit_order(card_a.suit) < suit_order(card_b.suit):
             return cls(first=card_a, second=card_b)
         return cls(first=card_b, second=card_a)
 
@@ -517,11 +500,11 @@ def dead_cards_from_known_cards(
     """
     if len(hero_hole_cards) != HOLE_CARDS_PER_HAND:
         raise ValueError(
-            f"dead_cards_from_known_cards expects exactly " f"{HOLE_CARDS_PER_HAND} hero hole cards"
+            f"dead_cards_from_known_cards expects exactly {HOLE_CARDS_PER_HAND} hero hole cards"
         )
     if len(board_cards) > MAX_BOARD_CARDS:
         raise ValueError(
-            f"dead_cards_from_known_cards expects at most " f"{MAX_BOARD_CARDS} board cards"
+            f"dead_cards_from_known_cards expects at most {MAX_BOARD_CARDS} board cards"
         )
 
     combined: list[Card] = [*hero_hole_cards, *board_cards]

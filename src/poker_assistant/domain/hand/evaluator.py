@@ -108,8 +108,7 @@ def evaluate_five_card_hand(cards: Sequence[Card]) -> HandRank:
     """
     if len(cards) != STRAIGHT_LENGTH:
         raise ValueError(
-            f"evaluate_five_card_hand expects exactly {STRAIGHT_LENGTH} cards, "
-            f"got {len(cards)}",
+            f"evaluate_five_card_hand expects exactly {STRAIGHT_LENGTH} cards, got {len(cards)}",
         )
 
     ranks_desc: list[int] = sorted((int(card.rank) for card in cards), reverse=True)

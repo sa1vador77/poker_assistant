@@ -8,10 +8,13 @@ from poker_assistant.domain.cards import (
     Card,
     Rank,
     Suit,
+    SuitOrder,
     cards_are_unique,
     parse_card_token,
     parse_cards_compact,
     rank_to_label,
+    suit_from_order,
+    suit_order,
 )
 
 
@@ -28,6 +31,48 @@ class TestSuit:
     def test_unknown_glyph_raises(self) -> None:
         with pytest.raises(ValueError):
             Suit("X")
+
+
+class TestSuitOrder:
+    def test_order_values_are_zero_through_three(self) -> None:
+        # The numeric ordering must be tightly packed [0, 4) so that
+        # it can be used as both an array index and a byte slot in the
+        # native backend without translation.
+        assert {int(member) for member in SuitOrder} == {0, 1, 2, 3}
+
+    @pytest.mark.parametrize(
+        ("suit", "expected_order"),
+        [
+            (Suit.SPADES, SuitOrder.SPADES),
+            (Suit.HEARTS, SuitOrder.HEARTS),
+            (Suit.DIAMONDS, SuitOrder.DIAMONDS),
+            (Suit.CLUBS, SuitOrder.CLUBS),
+        ],
+    )
+    def test_suit_order_maps_to_the_right_member(
+        self,
+        suit: Suit,
+        expected_order: SuitOrder,
+    ) -> None:
+        assert suit_order(suit) is expected_order
+
+    def test_suit_from_order_inverts_suit_order(self) -> None:
+        for suit in Suit:
+            assert suit_from_order(suit_order(suit)) is suit
+
+    def test_suit_order_inverts_suit_from_order(self) -> None:
+        for order in SuitOrder:
+            assert suit_order(suit_from_order(order)) is order
+
+    def test_canonical_order_is_spades_first_clubs_last(self) -> None:
+        # This particular order is a contract used by HoleCombo
+        # canonicalisation and by the native backend's card encoding.
+        # Pinning it here means a future accidental reorder would break
+        # this test loudly rather than silently change combo identities.
+        assert int(SuitOrder.SPADES) == 0
+        assert int(SuitOrder.HEARTS) == 1
+        assert int(SuitOrder.DIAMONDS) == 2
+        assert int(SuitOrder.CLUBS) == 3
 
 
 class TestRank:
