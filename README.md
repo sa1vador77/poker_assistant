@@ -115,32 +115,32 @@ rm -rf build/
 uv sync --reinstall-package poker-assistant
 ```
 
-### IDE setup for the native extension (optional)
+IDE setup for the native extension (optional)
 
-VSCode and other tools that index C++ need to know where pybind11
-headers live. CMake emits `compile_commands.json` into the build
-directory; point your IDE at it.
+After `uv sync`, run once to fix paths in `compile_commands.json`:
 
-For VSCode with the C/C++ extension, create `.vscode/c_cpp_properties.json`:
+    uv run python tools/fix_compile_commands.py
 
-```json
-{
-    "version": 4,
-    "configurations": [
-        {
+Then point VSCode at the fixed file via `.vscode/c_cpp_properties.json`:
+
+    {
+        "version": 4,
+        "configurations": [{
             "name": "CMake-driven",
-            "compileCommands": "${workspaceFolder}/build/<wheel-tag>/compile_commands.json",
+            "compileCommands": "${workspaceFolder}/build/`<wheel-tag>`/compile_commands.json",
             "intelliSenseMode": "macos-clang-arm64",
             "cStandard": "c17",
             "cppStandard": "c++17"
-        }
-    ]
-}
-```
+        }]
+    }
 
 Replace `<wheel-tag>` with the directory CMake actually produced
-(`ls build/`). The `.vscode/` directory is ignored by git so each
-developer can configure their tooling independently.
+(`ls build/`). The fix-script is idempotent and should be re-run after
+each `uv sync --reinstall-package poker-assistant` because the build
+regenerates `compile_commands.json` with ephemeral paths.
+
+`.vscode/` is gitignored so each developer can configure their tooling
+independently.
 
 ### Adding a dependency
 
