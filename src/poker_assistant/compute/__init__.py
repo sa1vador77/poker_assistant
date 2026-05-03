@@ -16,10 +16,16 @@ from poker_assistant.compute.card_encoding import (
     encode_card,
     encode_cards,
 )
+from poker_assistant.compute.equity_protocol import (
+    EquityBackend,
+    EquityResult,
+)
 
 __all__ = [
     "DECK_SIZE",
     "RANKS_PER_SUIT",
+    "EquityBackend",
+    "EquityResult",
     "decode_card",
     "decode_cards",
     "encode_card",
