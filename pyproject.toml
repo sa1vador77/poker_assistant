@@ -66,6 +66,12 @@ wheel.packages = ["src/poker_assistant"]
 cmake.version = ">=3.20"
 cmake.build-type = "Release"
 
+# Use a stable, in-tree build directory so that CMake artefacts
+# (notably compile_commands.json for IDE tooling) survive across
+# builds. The {wheel_tag} placeholder isolates builds per Python
+# version and architecture (e.g. cp313-cp313-macosx_26_0_arm64).
+build-dir = "build/{wheel_tag}"
+
 # --------------------------------------------------------------------------- #
 # uv.
 # --------------------------------------------------------------------------- #

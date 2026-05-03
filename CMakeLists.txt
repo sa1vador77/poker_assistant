@@ -15,6 +15,12 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
+# Emit compile_commands.json for IDE/tooling integration
+# (clangd, VSCode C++ extension, clang-tidy, etc).
+# The file lives in the build directory and is updated automatically
+# whenever the build configuration changes.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # scikit-build-core makes Python and pybind11 available via find_package;
 # this is the recommended path documented in the scikit-build-core README.
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)

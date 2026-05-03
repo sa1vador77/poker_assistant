@@ -115,6 +115,33 @@ rm -rf build/
 uv sync --reinstall-package poker-assistant
 ```
 
+### IDE setup for the native extension (optional)
+
+VSCode and other tools that index C++ need to know where pybind11
+headers live. CMake emits `compile_commands.json` into the build
+directory; point your IDE at it.
+
+For VSCode with the C/C++ extension, create `.vscode/c_cpp_properties.json`:
+
+```json
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "CMake-driven",
+            "compileCommands": "${workspaceFolder}/build/<wheel-tag>/compile_commands.json",
+            "intelliSenseMode": "macos-clang-arm64",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        }
+    ]
+}
+```
+
+Replace `<wheel-tag>` with the directory CMake actually produced
+(`ls build/`). The `.vscode/` directory is ignored by git so each
+developer can configure their tooling independently.
+
 ### Adding a dependency
 
 ```bash
