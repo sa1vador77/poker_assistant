@@ -1,4 +1,3 @@
-
 # poker_assistant
 
 A live poker assistant that watches a poker client's log on screen and,
@@ -21,7 +20,8 @@ covered by tests; the orchestration and UI layers are not yet built.
 | Infrastructure    | Repository scaffold, logging, tooling                                  | Done        |
 | Domain primitives | `domain/cards`, `domain/ranges`, `domain/hand`, `domain/board` | Done        |
 | Compute           | Native build system,`_native_equity.cpp`                             | Done        |
-| Compute           | `card_encoding`, `equity_protocol`, Python and native backends     | In progress |
+| Compute           | `card_encoding`, `equity_protocol`                                 | Done        |
+| Compute           | Python and native equity backends                                      | In progress |
 | Domain composite  | `domain/equity`, `domain/hero` (made hand, draws, snapshot)        | Pending     |
 | Domain top        | `domain/decision`, `domain/state`                                  | Pending     |
 | Vision            | Screenshot to event extraction                                         | Pending     |
@@ -168,12 +168,14 @@ poker_assistant/
 │   └── poker_assistant/
 │       ├── core/              # logger, shared infrastructure
 │       ├── domain/            # poker logic
-│       │   ├── cards.py
+│       │   ├── cards.py       # Card, Rank, Suit, SuitOrder, parsing
 │       │   ├── ranges/        # combos, hand classes, parser, presets
 │       │   ├── hand/          # 5-7 card hand evaluator
 │       │   └── board/         # board texture analysis
 │       ├── compute/           # equity backends + native extension
-│       │   └── _native_equity.cpp
+│       │   ├── _native_equity.cpp
+│       │   ├── card_encoding.py
+│       │   └── equity_protocol.py
 │       ├── vision/            # planned: screenshot to events
 │       ├── application/       # planned: orchestrator
 │       └── cli/               # planned: entry points
